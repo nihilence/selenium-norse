@@ -3,7 +3,7 @@ require "selenium-webdriver"
 require "rspec"
 include RSpec::Expectations
 
-describe "AddUser" do
+describe "RemoveUser" do
 
   before(:each) do
     @driver = Selenium::WebDriver.for :firefox
