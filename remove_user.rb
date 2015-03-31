@@ -6,8 +6,9 @@ include RSpec::Expectations
 describe "RemoveUser" do
 
   before(:each) do
+    @lines = File.readlines('remove_users.txt')
+    @base_url = @lines.shift.chomp
     @driver = Selenium::WebDriver.for :firefox
-    @base_url = "http://10.10.11.28/"
     @accept_next_alert = true
     @driver.manage.timeouts.implicit_wait = 30
     @verification_errors = []
@@ -19,18 +20,32 @@ describe "RemoveUser" do
   end
 
   it "test_add_user" do
+    login
+
+    @lines.each do |line|
+      remove_user(line.strip.chomp)
+    end
+
+    @driver.find_element(:id, "treeNode_logout_label").click
+  end
+
+  def login
     @driver.get(@base_url + "/account/login/?next=/")
     @driver.find_element(:id, "id_username").clear
     @driver.find_element(:id, "id_username").send_keys "root"
     @driver.find_element(:id, "id_password").clear
     @driver.find_element(:id, "id_password").send_keys "isla"
     @driver.find_element(:id, "dijit_form_Button_0_label").click
+  end
+
+  def remove_user(username)
     @driver.find_element(:id, "treeNode_account_label").click
     @driver.find_element(:id, "treeNode_account.bsdUsers_label").click
-    @driver.find_element(:xpath, "//span[text()='username']").click
+    @driver.find_element(:xpath, "//span[text()='"+ username + "']").click
     @driver.find_element(:id, "btn_User_Delete_label").click
     @driver.find_element(:id, "btn_User_Ok_label").click
-    @driver.find_element(:id, "treeNode_logout_label").click
+    @driver.find_element(:id, "treeNode_account.bsdUsers_label").click
+    @driver.find_element(:id, "treeNode_account_label").click
   end
 
   def element_present?(how, what)

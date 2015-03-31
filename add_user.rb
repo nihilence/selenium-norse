@@ -20,6 +20,8 @@ describe "AddUser" do
   end
 
   it "test_add_user" do
+    login
+
     @lines.each do |line|
       line_arr = line.split(',')
       username, name, email = line_arr[0].strip, line_arr[1].strip, line_arr[2].strip
@@ -27,15 +29,19 @@ describe "AddUser" do
       add_user(username, name, email, pass, pass_conf)
     end
 
+    @driver.find_element(:id, "treeNode_logout_label").click
   end
 
-  def add_user(username, name, email, pass, pass_conf)
+  def login
     @driver.get(@base_url + "/account/login/?next=/")
     @driver.find_element(:id, "id_username").clear
     @driver.find_element(:id, "id_username").send_keys "root"
     @driver.find_element(:id, "id_password").clear
     @driver.find_element(:id, "id_password").send_keys "isla"
     @driver.find_element(:id, "dijit_form_Button_0_label").click
+  end
+
+  def add_user(username, name, email, pass, pass_conf)
     @driver.find_element(:id, "menuBar_Account").click
     @driver.find_element(:id, "tab_account_tablist_tab_bsdUsers").click
     @driver.find_element(:id, "datagridBtn_bsdusers_Add_label").click
@@ -50,7 +56,6 @@ describe "AddUser" do
     @driver.find_element(:id, "id_bsdusr_password2").clear
     @driver.find_element(:id, "id_bsdusr_password2").send_keys pass_conf
     @driver.find_element(:id, "btn_User_Add_label").click
-    @driver.find_element(:id, "treeNode_logout_label").click
   end
 
   def element_present?(how, what)
